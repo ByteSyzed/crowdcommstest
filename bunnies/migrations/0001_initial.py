@@ -26,12 +26,12 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('location', models.CharField(max_length=64, unique=True)),
-                ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ('owner', models.ForeignKey(on_delete=models.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.AddField(
             model_name='bunny',
             name='home',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='bunnies', to='bunnies.RabbitHole'),
+            field=models.ForeignKey(on_delete=models.CASCADE, related_name='bunnies', to='bunnies.RabbitHole'),
         ),
     ]

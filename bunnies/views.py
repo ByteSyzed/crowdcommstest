@@ -13,10 +13,18 @@ class RabbitHoleViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, RabbitHolePermissions)
     queryset = RabbitHole.objects.all()
 
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
     def create(self, request, *args, **kwargs):
         return super().create(request, *args, **kwargs)
 
     def filter_queryset(self, queryset):
+        user = self.request.user
+        if user.is_authenticated:
+            queryset = queryset.filter(owner=user)
+        else:
+            queryset = queryset.none()
         return queryset
 
 

@@ -9,7 +9,7 @@ class RabbitHoleSerializer(serializers.ModelSerializer):
     bunny_count = serializers.SerializerMethodField()
 
     def get_bunny_count(self, obj):
-        return Bunny.objects.count()
+        return obj.bunnies.count()
 
     class Meta:
         model = RabbitHole
@@ -22,9 +22,14 @@ class BunnySerializer(serializers.ModelSerializer):
     family_members = serializers.SerializerMethodField()
 
     def get_family_members(self, obj):
-        return []
+        rabbit_hole = obj.home
+        family_bunnies = rabbit_hole.bunnies.exclude(id=obj.id)
+        return family_bunnies.values_list('name', flat=True)
 
     def validate(self, attrs):
+        home = attrs.get('home')
+        if home and home.bunnies.count() >= home.bunnies_limit:
+            raise serializers.ValidationError("Cannot exceed the limit of bunnies in the rabbit hole.")
         return attrs
 
     class Meta:
